@@ -663,6 +663,20 @@ button, input, select, textarea {
   transform: scale(1.08);
 }
 
+/* Adopted Pet Styling */
+.pet-card.adopted {
+  opacity: 0.85;
+}
+
+.pet-card.adopted .pet-image-container img {
+  filter: grayscale(40%) contrast(0.9);
+}
+
+.pet-card.adopted:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px var(--shadow-color);
+}
+
 .pet-status-badge {
   position: absolute;
   top: 16px;

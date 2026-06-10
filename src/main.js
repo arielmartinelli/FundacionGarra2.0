@@ -93,9 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filter pets
     let filteredPets = allPets;
     
-    // If we are on homepage, show only available pets (not adopted) and limit to 3
+    // If we are on homepage, show all pets (including adopted) and limit to 3
     if (isHomepage) {
-      filteredPets = allPets.filter(p => !p.adopted);
       // Filter by category if selected
       if (categoryFilter !== 'all') {
         filteredPets = filteredPets.filter(p => p.category === categoryFilter);
@@ -131,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       return `
-        <div class="pet-card" data-category="${pet.category}" id="pet-${pet.id}" style="opacity: 0; transform: scale(0.95); transition: var(--transition);">
+        <div class="pet-card ${pet.adopted ? 'adopted' : ''}" data-category="${pet.category}" id="pet-${pet.id}" style="opacity: 0; transform: scale(0.95); transition: var(--transition);">
           <div class="pet-image-container">
             ${statusBadgeHtml}
             <img src="${pet.image}" alt="${pet.name}, mascota en adopción" />

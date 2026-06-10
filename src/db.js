@@ -100,7 +100,54 @@ export const INITIAL_PETS = [
   }
 ];
 
-// Async database helpers
+export const INITIAL_NEWS = [
+  {
+    id: "news_1",
+    title: "¡Caniles reconstruidos con éxito!",
+    date: "10 Ago 2024",
+    description: "Tras el grave choque sufrido contra el muro perimetral de nuestro predio en Barrio Müller, logramos levantar e impermeabilizar nuevamente los caniles dañados gracias al enorme apoyo económico de la comunidad cordobesa.",
+    image: "./hero_dog.png"
+  },
+  {
+    id: "news_2",
+    title: "Jornada de Vacunación Gratuita",
+    date: "28 May 2026",
+    description: "El próximo sábado realizaremos una gran jornada de vacunación antirrábica y desparasitación gratuita en la plaza de Barrio San Vicente en conjunto con el Ente BioCórdoba. ¡Traé a tu mascota con correa y collar!",
+    image: "./puppy_golden.png"
+  },
+  {
+    id: "news_3",
+    title: "La nueva vida de Milo",
+    date: "12 Abr 2026",
+    description: "Milo pasó 3 años esperando una familia en el refugio por ser un perrito de edad avanzada. Hoy nos comparte una foto durmiendo plácidamente junto a su adoptante María. ¡Adoptar un viejito es un acto de amor inigualable!",
+    image: "./senior_dog.png"
+  },
+  {
+    id: "news_4",
+    title: "Colecta Anual de Invierno",
+    date: "05 Jun 2026",
+    description: "Lanzamos nuestra campaña de abrigo y alimento balanceado. Necesitamos mantas, colchonetas y bolsas de alimento para ayudar a nuestros más de 80 rescatados a pasar los días más fríos del invierno en el predio.",
+    image: "./puppy_black.png"
+  },
+  {
+    id: "news_5",
+    title: "Talleres de Tenencia Responsable",
+    date: "20 May 2026",
+    description: "Durante todo el mes, nuestro equipo de voluntarios visitó colegios de la zona sur de Córdoba para dictar talleres educativos sobre el cuidado de mascotas, castración a término y prevención del abandono.",
+    image: "./adult_shepherd.png"
+  },
+  {
+    id: "news_6",
+    title: "Campaña de Castración en Müller",
+    date: "02 Jun 2026",
+    description: "Completamos con éxito el operativo de castración gratuita en Barrio Müller. Castramos a 45 perros y gatos en situación de calle, reduciendo la superpoblación y mejorando la salud de la comunidad.",
+    image: "./senior_fluffy.png"
+  }
+];
+
+/* ==========================================
+   PETS DATABASE OPERATION HELPERS
+   ========================================== */
 export async function getPets() {
   try {
     const { data, error } = await supabase
@@ -110,7 +157,6 @@ export async function getPets() {
 
     if (error) throw error;
 
-    // Seeding check: If database is online but completely empty, load defaults
     if (data.length === 0) {
       await resetPets();
       return INITIAL_PETS;
@@ -119,7 +165,6 @@ export async function getPets() {
     return data;
   } catch (err) {
     console.error('Error fetching pets from Supabase: ', err.message);
-    // Fallback: If Supabase connection configuration fails or is invalid, read from LocalStorage
     const local = localStorage.getItem('pets');
     if (local) return JSON.parse(local);
     return INITIAL_PETS;
@@ -129,7 +174,6 @@ export async function getPets() {
 export async function savePet(pet) {
   try {
     if (pet.id) {
-      // Update existing
       const { data, error } = await supabase
         .from('pets')
         .update(pet)
@@ -139,7 +183,6 @@ export async function savePet(pet) {
       if (error) throw error;
       return data[0];
     } else {
-      // Create new
       pet.id = 'pet_' + Date.now();
       const { data, error } = await supabase
         .from('pets')
@@ -151,7 +194,6 @@ export async function savePet(pet) {
     }
   } catch (err) {
     console.error('Error saving pet to Supabase: ', err.message);
-    // Fallback LocalStorage update
     const local = localStorage.getItem('pets') ? JSON.parse(localStorage.getItem('pets')) : INITIAL_PETS;
     if (pet.id) {
       const idx = local.findIndex(p => p.id === pet.id);
@@ -175,7 +217,6 @@ export async function deletePet(id) {
     if (error) throw error;
   } catch (err) {
     console.error('Error deleting pet from Supabase: ', err.message);
-    // Fallback local delete
     let local = localStorage.getItem('pets') ? JSON.parse(localStorage.getItem('pets')) : INITIAL_PETS;
     local = local.filter(p => p.id !== id);
     localStorage.setItem('pets', JSON.stringify(local));
@@ -184,15 +225,13 @@ export async function deletePet(id) {
 
 export async function resetPets() {
   try {
-    // Delete all rows in pets table
     const { error: deleteError } = await supabase
       .from('pets')
       .delete()
-      .neq('id', 'dummy_id_never_match'); // match all records
+      .neq('id', 'dummy_id_never_match');
 
     if (deleteError) throw deleteError;
 
-    // Load initial 9 pets
     const { data, error: insertError } = await supabase
       .from('pets')
       .insert(INITIAL_PETS)
@@ -204,5 +243,106 @@ export async function resetPets() {
     console.error('Error resetting database on Supabase: ', err.message);
     localStorage.setItem('pets', JSON.stringify(INITIAL_PETS));
     return INITIAL_PETS;
+  }
+}
+
+/* ==========================================
+   NEWS DATABASE OPERATION HELPERS
+   ========================================== */
+export async function getNews() {
+  try {
+    const { data, error } = await supabase
+      .from('news')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) throw error;
+
+    if (data.length === 0) {
+      await resetNews();
+      return INITIAL_NEWS;
+    }
+    
+    return data;
+  } catch (err) {
+    console.error('Error fetching news from Supabase: ', err.message);
+    const local = localStorage.getItem('news');
+    if (local) return JSON.parse(local);
+    return INITIAL_NEWS;
+  }
+}
+
+export async function saveNews(newsItem) {
+  try {
+    if (newsItem.id) {
+      const { data, error } = await supabase
+        .from('news')
+        .update(newsItem)
+        .eq('id', newsItem.id)
+        .select();
+        
+      if (error) throw error;
+      return data[0];
+    } else {
+      newsItem.id = 'news_' + Date.now();
+      const { data, error } = await supabase
+        .from('news')
+        .insert([newsItem])
+        .select();
+        
+      if (error) throw error;
+      return data[0];
+    }
+  } catch (err) {
+    console.error('Error saving news to Supabase: ', err.message);
+    const local = localStorage.getItem('news') ? JSON.parse(localStorage.getItem('news')) : INITIAL_NEWS;
+    if (newsItem.id) {
+      const idx = local.findIndex(n => n.id === newsItem.id);
+      if (idx !== -1) local[idx] = { ...local[idx], ...newsItem };
+    } else {
+      newsItem.id = 'news_' + Date.now();
+      local.push(newsItem);
+    }
+    localStorage.setItem('news', JSON.stringify(local));
+    return newsItem;
+  }
+}
+
+export async function deleteNews(id) {
+  try {
+    const { error } = await supabase
+      .from('news')
+      .delete()
+      .eq('id', id);
+      
+    if (error) throw error;
+  } catch (err) {
+    console.error('Error deleting news from Supabase: ', err.message);
+    let local = localStorage.getItem('news') ? JSON.parse(localStorage.getItem('news')) : INITIAL_NEWS;
+    local = local.filter(n => n.id !== id);
+    localStorage.setItem('news', JSON.stringify(local));
+  }
+}
+
+export async function resetNews() {
+  try {
+    const { error: deleteError } = await supabase
+      .from('news')
+      .delete()
+      .neq('id', 'dummy_id_never_match');
+
+    if (deleteError) throw deleteError;
+
+    const { data, error: insertError } = await supabase
+      .from('news')
+      .insert(INITIAL_NEWS)
+      .select();
+
+    if (insertError) throw insertError;
+    return data;
+  } catch (err) {
+    console.error('Error resetting news database on Supabase: ', err.message);
+    localStorage.setItem('news', JSON.stringify(INITIAL_NEWS));
+    return INITIAL_NEWS;
   }
 }
