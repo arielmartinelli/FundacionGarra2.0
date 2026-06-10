@@ -496,8 +496,8 @@ document.addEventListener('DOMContentLoaded', () => {
     paw.style.top = `${y}px`;
     paw.style.setProperty('--paw-rot', `${rotation}deg`);
     
-    // Randomized organic opacity (0.045 to 0.08)
-    const opacity = (0.045 + Math.random() * 0.035).toFixed(3);
+    // Randomized organic opacity (0.10 to 0.16)
+    const opacity = (0.10 + Math.random() * 0.06).toFixed(3);
     paw.style.setProperty('--paw-opacity', opacity);
     
     // FontAwesome 6 Solid Paw SVG path
