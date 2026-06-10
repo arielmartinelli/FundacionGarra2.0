@@ -1779,3 +1779,90 @@ select.form-control {
   color: var(--primary);
   border-bottom-color: var(--primary);
 }
+
+/* ==========================================
+   NEWS CAROUSEL POSITIONING & CONTROLS
+   ========================================== */
+.news-carousel-container {
+  position: relative;
+  width: 100%;
+}
+
+.news-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.news-control-btn {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--text-dark);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  transition: var(--transition);
+}
+
+.news-control-btn:hover {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  transform: scale(1.08);
+}
+
+.news-control-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+/* On PC/desktop screens, display the arrows overlayed on the left and right sides of the carousel */
+@media (min-width: 769px) {
+  .news-carousel-container {
+    padding: 0 50px; /* Leave space on sides for arrows */
+  }
+
+  .news-controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none; /* Let pointer pass through the controls container */
+    z-index: 10;
+    margin-top: 0;
+  }
+
+  .news-control-btn {
+    pointer-events: auto; /* Enable clicks on the actual buttons */
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Slide arrows slightly outside the container boundaries */
+  #news-prev {
+    margin-left: -16px;
+  }
+  
+  #news-next {
+    margin-right: -16px;
+  }
+}
+
+/* On mobile/tactile screens, hide the arrow buttons to allow clean swipe gestures */
+@media (max-width: 768px) {
+  .news-controls {
+    display: none;
+  }
+}
