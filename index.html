@@ -67,7 +67,7 @@
           </div>
           <div class="hero-stats">
             <div class="stat-item">
-              <span class="stat-number" id="stat-rescues">1200+</span>
+              <span class="stat-number" id="stat-rescues">1300+</span>
               <span class="stat-label">Rescatados</span>
             </div>
             <div class="stat-item">
@@ -91,7 +91,7 @@
               </svg>
             </div>
             <div class="hero-badge-info">
-              <h4>¡Hola, soy Rocky!</h4>
+              <h4>¡Hola, soy Roco!</h4>
               <p>Busco una familia amorosa 🐾</p>
             </div>
           </div>
@@ -166,7 +166,7 @@
         <div class="filter-container animate-on-scroll">
           <!-- Real-time Filter buttons -->
           <div class="filter-buttons">
-            <a href="./adopciones.html" class="filter-btn active" id="btn-filter-all" style="text-decoration: none; display: inline-block; text-align: center;">Ver todo</a>
+            <button class="filter-btn active" data-filter="all" id="btn-filter-all">Ver todo</button>
             <button class="filter-btn" data-filter="puppy" id="btn-filter-puppy">Cachorros</button>
             <button class="filter-btn" data-filter="adult" id="btn-filter-adult">Adultos</button>
             <button class="filter-btn" data-filter="senior" id="btn-filter-senior">Viejitos</button>
@@ -378,6 +378,11 @@
                 <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
               </svg>
             </button>
+            
+            <div class="news-dots" id="news-dots">
+              <span class="news-dot active" data-page="0"></span>
+              <span class="news-dot" data-page="1"></span>
+            </div>
             
             <button class="news-control-btn" id="news-next" aria-label="Noticias siguientes">
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
