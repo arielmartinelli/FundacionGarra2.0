@@ -446,6 +446,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================
+     SCROLL PROGRESS PAW INDICATORS
+     ========================================== */
+  const pawIndicators = document.querySelectorAll('.paw-indicator');
+
+  if (pawIndicators.length > 0) {
+    const updatePawScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight <= 0) return;
+      const scrollPercent = (window.scrollY / scrollHeight) * 100;
+      
+      pawIndicators.forEach((paw, idx) => {
+        const threshold = (idx + 1) * 20 - 5; // 15%, 35%, 55%, 75%, 95%
+        if (scrollPercent >= threshold) {
+          paw.classList.add('active');
+        } else {
+          paw.classList.remove('active');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', updatePawScroll);
+    updatePawScroll(); // Initial run to light up the first ones if page loaded scrolled
+  }
+
+  /* ==========================================
      INTERSECTION OBSERVER FOR SCROLL ANIMATIONS
      ========================================== */
   const scrollElements = document.querySelectorAll('.animate-on-scroll');
