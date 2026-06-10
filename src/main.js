@@ -176,7 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterBtns = document.querySelectorAll('.filter-btn');
 
   filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      // If it is an anchor link (e.g. homepage 'Ver todo'), let it navigate
+      if (btn.tagName === 'A') return;
+      
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
