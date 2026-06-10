@@ -956,12 +956,36 @@ button, input, select, textarea {
    NOTICIAS / BLOG SECTION
    ========================================== */
 .news-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 32px;
+  display: flex;
+  overflow-x: auto;
+  gap: 24px;
+  scroll-behavior: smooth;
+  padding: 10px 4px 20px 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-lightest) transparent;
+}
+
+/* Custom Scrollbar for News Track */
+.news-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.news-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.news-grid::-webkit-scrollbar-thumb {
+  background: var(--primary-lightest);
+  border-radius: 10px;
+  transition: var(--transition);
+}
+
+.news-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }
 
 .news-card {
+  flex: 0 0 350px;
   background-color: var(--card-bg);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -1581,6 +1605,10 @@ select.form-control {
   .pet-action .btn {
     padding: 8px 10px;
     font-size: 0.8rem;
+  }
+
+  .news-card {
+    flex: 0 0 290px;
   }
 }
 

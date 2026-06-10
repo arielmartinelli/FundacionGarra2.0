@@ -381,23 +381,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================
-     DYNAMIC NEWS RENDERING & CAROUSEL (PAGINATION)
+     DYNAMIC NEWS RENDERING & HORIZONTAL SCROLL TRACK
      ========================================== */
   const newsGrid = document.getElementById('news-grid');
   const newsPrevBtn = document.getElementById('news-prev');
   const newsNextBtn = document.getElementById('news-next');
-  const newsDotsContainer = document.getElementById('news-dots');
   
   if (newsGrid) {
     let allNews = [];
-    let currentNewsPage = 0;
-    const newsPerPage = 3;
 
     const renderNews = () => {
-      const startIndex = currentNewsPage * newsPerPage;
-      const paginatedNews = allNews.slice(startIndex, startIndex + newsPerPage);
-      
-      newsGrid.innerHTML = paginatedNews.map(item => `
+      newsGrid.innerHTML = allNews.map(item => `
         <article class="news-card" id="news-${item.id}" style="opacity: 0; transform: translateY(10px); transition: var(--transition);">
           <div class="news-img">
             <span class="news-date">${item.date}</span>
@@ -420,18 +414,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }, idx * 50);
         });
       }, 50);
-
-      // Update dots
-      updateNewsDots();
-    };
-
-    const updateNewsDots = () => {
-      if (!newsDotsContainer) return;
-      const totalPages = Math.ceil(allNews.length / newsPerPage);
-      
-      newsDotsContainer.innerHTML = Array.from({ length: totalPages }).map((_, idx) => `
-        <span class="news-dot ${idx === currentNewsPage ? 'active' : ''}" data-page="${idx}"></span>
-      `).join('');
     };
 
     // Load news and initialize
@@ -442,35 +424,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initNews();
 
-    // Event listeners for prev/next buttons
+    // Event listeners for prev/next buttons (scrolling horizontally)
     if (newsPrevBtn) {
       newsPrevBtn.addEventListener('click', () => {
-        const totalPages = Math.ceil(allNews.length / newsPerPage);
-        if (totalPages > 0) {
-          currentNewsPage = (currentNewsPage - 1 + totalPages) % totalPages;
-          renderNews();
-        }
+        const scrollAmount = window.innerWidth <= 768 ? 314 : 374; // card width + gap
+        newsGrid.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
       });
     }
 
     if (newsNextBtn) {
       newsNextBtn.addEventListener('click', () => {
-        const totalPages = Math.ceil(allNews.length / newsPerPage);
-        if (totalPages > 0) {
-          currentNewsPage = (currentNewsPage + 1) % totalPages;
-          renderNews();
-        }
-      });
-    }
-
-    // Dot click listener
-    if (newsDotsContainer) {
-      newsDotsContainer.addEventListener('click', (e) => {
-        if (e.target && e.target.classList.contains('news-dot')) {
-          const page = parseInt(e.target.getAttribute('data-page'), 10);
-          currentNewsPage = page;
-          renderNews();
-        }
+        const scrollAmount = window.innerWidth <= 768 ? 314 : 374; // card width + gap
+        newsGrid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
       });
     }
   }
