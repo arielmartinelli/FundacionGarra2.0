@@ -960,32 +960,20 @@ button, input, select, textarea {
   overflow-x: auto;
   gap: 24px;
   scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
   padding: 10px 4px 20px 4px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary-lightest) transparent;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
-/* Custom Scrollbar for News Track */
+/* Hide scrollbar for Chrome, Safari and Opera */
 .news-grid::-webkit-scrollbar {
-  height: 8px;
-}
-
-.news-grid::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.news-grid::-webkit-scrollbar-thumb {
-  background: var(--primary-lightest);
-  border-radius: 10px;
-  transition: var(--transition);
-}
-
-.news-grid::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  display: none;
 }
 
 .news-card {
-  flex: 0 0 350px;
+  flex: 0 0 calc((100% - 48px) / 3);
+  scroll-snap-align: start;
   background-color: var(--card-bg);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -1608,7 +1596,7 @@ select.form-control {
   }
 
   .news-card {
-    flex: 0 0 290px;
+    flex: 0 0 calc((100% - 24px) / 2);
   }
 }
 
@@ -1616,6 +1604,10 @@ select.form-control {
   .pets-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
+  }
+
+  .news-card {
+    flex: 0 0 100%;
   }
 }
 

@@ -430,14 +430,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners for prev/next buttons (scrolling horizontally)
     if (newsPrevBtn) {
       newsPrevBtn.addEventListener('click', () => {
-        const scrollAmount = window.innerWidth <= 768 ? 314 : 374; // card width + gap
+        const card = newsGrid.querySelector('.news-card');
+        const scrollAmount = card ? card.offsetWidth + 24 : 380; // card width + gap
         newsGrid.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
       });
     }
 
     if (newsNextBtn) {
       newsNextBtn.addEventListener('click', () => {
-        const scrollAmount = window.innerWidth <= 768 ? 314 : 374; // card width + gap
+        const card = newsGrid.querySelector('.news-card');
+        const scrollAmount = card ? card.offsetWidth + 24 : 380; // card width + gap
         newsGrid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
       });
     }
