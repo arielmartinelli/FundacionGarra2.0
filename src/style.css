@@ -1691,7 +1691,7 @@ select.form-control {
   margin-top: 8px;
 }
 
-.preset-option {
+.preset-option, .preset-option-news {
   border: 2px solid transparent;
   border-radius: var(--radius-sm);
   overflow: hidden;
@@ -1701,18 +1701,18 @@ select.form-control {
   position: relative;
 }
 
-.preset-option img {
+.preset-option img, .preset-option-news img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.preset-option.selected {
+.preset-option.selected, .preset-option-news.selected {
   border-color: var(--primary);
   transform: scale(1.05);
 }
 
-.preset-option.selected::after {
+.preset-option.selected::after, .preset-option-news.selected::after {
   content: '✓';
   position: absolute;
   top: 4px;
@@ -1727,4 +1727,35 @@ select.form-control {
   justify-content: center;
   font-size: 0.7rem;
   font-weight: bold;
+}
+
+/* Admin Tabs */
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 32px;
+}
+
+.admin-tab-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  font-family: var(--font-headings);
+  font-weight: 600;
+  padding: 12px 24px;
+  cursor: pointer;
+  color: var(--text-muted);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: var(--transition);
+}
+
+.admin-tab-btn:hover {
+  color: var(--text-dark);
+}
+
+.admin-tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
 }

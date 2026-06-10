@@ -1,4 +1,4 @@
-import { supabase, getPets, savePet, deletePet, resetPets } from './db.js';
+import { supabase, getPets, savePet, deletePet, resetPets, getNews, saveNews, deleteNews, resetNews } from './db.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
   /* ==========================================
@@ -82,7 +82,33 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   /* ==========================================
-     ADMIN TABLE & CRUD OPERATIONS (ASYNC/AWAIT)
+     TAB SWITCHING LOGIC (MASCOTAS VS NOTICIAS)
+     ========================================== */
+  const tabPets = document.getElementById('tab-pets');
+  const tabNews = document.getElementById('tab-news');
+  const sectionPets = document.getElementById('admin-section-pets');
+  const sectionNews = document.getElementById('admin-section-news');
+
+  if (tabPets && tabNews && sectionPets && sectionNews) {
+    tabPets.addEventListener('click', () => {
+      tabPets.classList.add('active');
+      tabNews.classList.remove('active');
+      sectionPets.style.display = 'block';
+      sectionNews.style.display = 'none';
+      renderAdminTable();
+    });
+
+    tabNews.addEventListener('click', () => {
+      tabNews.classList.add('active');
+      tabPets.classList.remove('active');
+      sectionNews.style.display = 'block';
+      sectionPets.style.display = 'none';
+      renderAdminNewsTable();
+    });
+  }
+
+  /* ==========================================
+     MASCOTAS CRUD OPERATIONS
      ========================================== */
   const adminPetsTbody = document.getElementById('admin-pets-tbody');
   const adminFormCard = document.getElementById('admin-form-card');
@@ -106,11 +132,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   const presetOptions = document.querySelectorAll('.preset-option');
 
-  // Render list of pets in admin table (Async)
+  // Render list of pets in admin table
   const renderAdminTable = async () => {
     if (!adminPetsTbody) return;
     
-    // Clear and show loading state
     adminPetsTbody.innerHTML = `
       <tr>
         <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
@@ -163,30 +188,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }).join('');
   };
 
-  // Initial table load
-  await renderAdminTable();
-
-  // Collapsible Form Toggle
-  btnShowAddForm.addEventListener('click', () => {
-    adminPetForm.reset();
-    petIdInput.value = '';
-    formTitle.textContent = 'Agregar Nueva Mascota';
-    formSubtitle.textContent = 'Completá los datos del nuevo rescatado.';
-    
-    presetOptions.forEach(opt => opt.classList.remove('selected'));
-    presetOptions[0].classList.add('selected');
-    petImageUrlInput.value = presetOptions[0].getAttribute('data-img');
-    
-    adminFormCard.style.display = 'block';
-    adminFormCard.scrollIntoView({ behavior: 'smooth' });
-  });
-
-  btnCancelForm.addEventListener('click', () => {
-    adminFormCard.style.display = 'none';
-    adminPetForm.reset();
-  });
-
-  // Preset Image Picker
+  // Preset Image Picker (Pets)
   presetOptions.forEach(opt => {
     opt.addEventListener('click', () => {
       presetOptions.forEach(o => o.classList.remove('selected'));
@@ -196,48 +198,73 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // Handle Form Submission (Add / Edit)
-  adminPetForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  // Show Add Form (Pets)
+  if (btnShowAddForm) {
+    btnShowAddForm.addEventListener('click', () => {
+      adminPetForm.reset();
+      petIdInput.value = '';
+      formTitle.textContent = 'Agregar Nueva Mascota';
+      formSubtitle.textContent = 'Completá los datos del nuevo rescatado.';
+      
+      presetOptions.forEach(opt => opt.classList.remove('selected'));
+      presetOptions[0].classList.add('selected');
+      petImageUrlInput.value = presetOptions[0].getAttribute('data-img');
+      
+      adminFormCard.style.display = 'block';
+      adminFormCard.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
 
-    const id = petIdInput.value;
-    const name = petNameInput.value.trim();
-    const age = petAgeInput.value.trim();
-    const category = petCategoryInput.value;
-    const adopted = petAdoptedInput.value === 'true';
-    const description = petDescriptionInput.value.trim();
-    const image = petImageUrlInput.value.trim();
-    
-    const traits = petTraitsInput.value
-      .split(',')
-      .map(t => t.trim())
-      .filter(t => t !== '');
+  if (btnCancelForm) {
+    btnCancelForm.addEventListener('click', () => {
+      adminFormCard.style.display = 'none';
+      adminPetForm.reset();
+    });
+  }
 
-    const petData = {
-      name,
-      age,
-      category,
-      adopted,
-      traits,
-      image,
-      description
-    };
+  // Submit Form (Add/Edit Pet)
+  if (adminPetForm) {
+    adminPetForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    if (id) {
-      petData.id = id;
-    }
+      const id = petIdInput.value;
+      const name = petNameInput.value.trim();
+      const age = petAgeInput.value.trim();
+      const category = petCategoryInput.value;
+      const adopted = petAdoptedInput.value === 'true';
+      const description = petDescriptionInput.value.trim();
+      const image = petImageUrlInput.value.trim();
+      
+      const traits = petTraitsInput.value
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t !== '');
 
-    // Save to Supabase (Async)
-    await savePet(petData);
+      const petData = {
+        name,
+        age,
+        category,
+        adopted,
+        traits,
+        image,
+        description
+      };
 
-    adminFormCard.style.display = 'none';
-    adminPetForm.reset();
-    await renderAdminTable();
-    
-    alert(id ? '¡Mascota editada con éxito! 🐾' : '¡Mascota agregada con éxito! 🐾');
-  });
+      if (id) {
+        petData.id = id;
+      }
 
-  // Handle Action Buttons Click (Edit, Delete, Toggle Status)
+      await savePet(petData);
+
+      adminFormCard.style.display = 'none';
+      adminPetForm.reset();
+      await renderAdminTable();
+      
+      alert(id ? '¡Mascota editada con éxito! 🐾' : '¡Mascota agregada con éxito! 🐾');
+    });
+  }
+
+  // Row actions (Pets Table)
   if (adminPetsTbody) {
     adminPetsTbody.addEventListener('click', async (e) => {
       const target = e.target;
@@ -248,14 +275,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       const pet = pets.find(p => p.id === petId);
       if (!pet) return;
 
-      // Toggle status action
+      // Toggle status
       if (target.classList.contains('btn-toggle-status')) {
         pet.adopted = !pet.adopted;
         await savePet(pet);
         await renderAdminTable();
       }
 
-      // Edit action
+      // Edit
       if (target.classList.contains('btn-edit-pet')) {
         petIdInput.value = pet.id;
         petNameInput.value = pet.name;
@@ -281,7 +308,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         adminFormCard.scrollIntoView({ behavior: 'smooth' });
       }
 
-      // Delete action
+      // Delete
       if (target.classList.contains('btn-delete-pet')) {
         if (confirm(`¿Estás seguro de que deseas eliminar permanentemente a ${pet.name}?`)) {
           await deletePet(petId);
@@ -291,14 +318,213 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // Reset database button
+  // Reset database (Pets)
   if (btnResetDb) {
     btnResetDb.addEventListener('click', async () => {
       if (confirm('¿Estás seguro de que deseas restaurar la base de datos a sus 9 perritos iniciales? Esto borrará tus cambios actuales en Supabase.')) {
         await resetPets();
         await renderAdminTable();
-        alert('Base de datos restaurada con éxito. 🐾');
+        alert('Base de datos de mascotas restaurada con éxito. 🐾');
       }
     });
   }
+
+  /* ==========================================
+     NOTICIAS CRUD OPERATIONS
+     ========================================== */
+  const adminNewsTbody = document.getElementById('admin-news-tbody');
+  const adminNewsFormCard = document.getElementById('admin-news-form-card');
+  const adminNewsForm = document.getElementById('admin-news-form');
+  
+  const newsFormTitle = document.getElementById('news-form-title');
+  const newsFormSubtitle = document.getElementById('news-form-subtitle');
+  
+  const newsIdInput = document.getElementById('news-id');
+  const newsTitleInput = document.getElementById('news-title');
+  const newsDateInput = document.getElementById('news-date');
+  const newsImageUrlInput = document.getElementById('news-image-url');
+  const newsDescriptionInput = document.getElementById('news-description');
+  
+  const btnShowAddNewsForm = document.getElementById('btn-show-add-news-form');
+  const btnCancelNewsForm = document.getElementById('btn-cancel-news-form');
+  const btnResetNewsDb = document.getElementById('btn-reset-news-db');
+  
+  const presetOptionsNews = document.querySelectorAll('.preset-option-news');
+
+  // Render news table
+  const renderAdminNewsTable = async () => {
+    if (!adminNewsTbody) return;
+    
+    adminNewsTbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+          Cargando noticias de Supabase... 📰
+        </td>
+      </tr>
+    `;
+
+    const news = await getNews();
+    
+    if (news.length === 0) {
+      adminNewsTbody.innerHTML = `
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+            No hay noticias cargadas. ¡Agregá una nueva! 📰
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    adminNewsTbody.innerHTML = news.map(item => {
+      return `
+        <tr id="admin-news-row-${item.id}">
+          <td>
+            <img src="${item.image}" alt="${item.title}" class="admin-thumbnail" onerror="this.src='./hero_dog.png'" />
+          </td>
+          <td style="font-weight: 600;">${item.title}</td>
+          <td>${item.date}</td>
+          <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.description}</td>
+          <td class="admin-actions-cell">
+            <button class="btn btn-outline admin-btn-sm btn-edit-news" data-id="${item.id}">
+              Editar
+            </button>
+            <button class="btn btn-outline admin-btn-sm btn-delete-news" data-id="${item.id}" style="border-color: #ef4444; color: #ef4444;">
+              Borrar
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  };
+
+  // Preset Image Picker (News)
+  presetOptionsNews.forEach(opt => {
+    opt.addEventListener('click', () => {
+      presetOptionsNews.forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      const imgPath = opt.getAttribute('data-img');
+      newsImageUrlInput.value = imgPath;
+    });
+  });
+
+  // Show Add Form (News)
+  if (btnShowAddNewsForm) {
+    btnShowAddNewsForm.addEventListener('click', () => {
+      adminNewsForm.reset();
+      newsIdInput.value = '';
+      newsFormTitle.textContent = 'Agregar Nueva Noticia';
+      newsFormSubtitle.textContent = 'Completá los datos de la novedad.';
+      
+      // Auto-fill current date formatted like "10 Jun 2026"
+      const options = { day: 'numeric', month: 'short', year: 'numeric' };
+      const today = new Date().toLocaleDateString('es-ES', options);
+      const formattedToday = today.replace('.', '').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      newsDateInput.value = formattedToday;
+
+      presetOptionsNews.forEach(opt => opt.classList.remove('selected'));
+      presetOptionsNews[0].classList.add('selected');
+      newsImageUrlInput.value = presetOptionsNews[0].getAttribute('data-img');
+      
+      adminNewsFormCard.style.display = 'block';
+      adminNewsFormCard.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  if (btnCancelNewsForm) {
+    btnCancelNewsForm.addEventListener('click', () => {
+      adminNewsFormCard.style.display = 'none';
+      adminNewsForm.reset();
+    });
+  }
+
+  // Submit Form (Add/Edit News)
+  if (adminNewsForm) {
+    adminNewsForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const id = newsIdInput.value;
+      const title = newsTitleInput.value.trim();
+      const date = newsDateInput.value.trim();
+      const description = newsDescriptionInput.value.trim();
+      const image = newsImageUrlInput.value.trim();
+
+      const newsData = {
+        title,
+        date,
+        image,
+        description
+      };
+
+      if (id) {
+        newsData.id = id;
+      }
+
+      await saveNews(newsData);
+
+      adminNewsFormCard.style.display = 'none';
+      adminNewsForm.reset();
+      await renderAdminNewsTable();
+      
+      alert(id ? '¡Noticia editada con éxito! 📰' : '¡Noticia agregada con éxito! 📰');
+    });
+  }
+
+  // Row actions (News Table)
+  if (adminNewsTbody) {
+    adminNewsTbody.addEventListener('click', async (e) => {
+      const target = e.target;
+      const newsId = target.getAttribute('data-id');
+      if (!newsId) return;
+
+      const newsList = await getNews();
+      const item = newsList.find(n => n.id === newsId);
+      if (!item) return;
+
+      // Edit
+      if (target.classList.contains('btn-edit-news')) {
+        newsIdInput.value = item.id;
+        newsTitleInput.value = item.title;
+        newsDateInput.value = item.date;
+        newsImageUrlInput.value = item.image;
+        newsDescriptionInput.value = item.description;
+
+        presetOptionsNews.forEach(opt => {
+          if (opt.getAttribute('data-img') === item.image) {
+            opt.classList.add('selected');
+          } else {
+            opt.classList.remove('selected');
+          }
+        });
+
+        newsFormTitle.textContent = `Editar Noticia: ${item.title}`;
+        newsFormSubtitle.textContent = `Modificá los campos necesarios para actualizar la noticia.`;
+
+        adminNewsFormCard.style.display = 'block';
+        adminNewsFormCard.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // Delete
+      if (target.classList.contains('btn-delete-news')) {
+        if (confirm(`¿Estás seguro de que deseas eliminar la noticia: "${item.title}"?`)) {
+          await deleteNews(newsId);
+          await renderAdminNewsTable();
+        }
+      }
+    });
+  }
+
+  // Reset database (News)
+  if (btnResetNewsDb) {
+    btnResetNewsDb.addEventListener('click', async () => {
+      if (confirm('¿Estás seguro de que deseas restaurar la sección de noticias a las 6 iniciales? Esto borrará tus cambios actuales en Supabase.')) {
+        await resetNews();
+        await renderAdminNewsTable();
+        alert('Noticias restauradas con éxito. 📰');
+      }
+    });
+  }
+
+  // Initial load
+  await renderAdminTable();
 });

@@ -55,114 +55,213 @@
 
     <!-- ADMIN CONTENT -->
     <main class="container admin-section">
-      <div class="admin-header-actions">
-        <div>
-          <h2>Panel de Administración</h2>
-          <p style="color: var(--text-muted);">Gestioná los perritos en adopción en tiempo real.</p>
-        </div>
-        <div style="display: flex; gap: 12px;">
-          <button class="btn btn-outline" id="btn-reset-db">Resetear Base de Datos</button>
-          <button class="btn btn-primary" id="btn-show-add-form">+ Agregar Perrito</button>
-        </div>
+      <!-- Tabs for switching between Pets and News -->
+      <div class="admin-tabs">
+        <button class="admin-tab-btn active" id="tab-pets">Mascotas</button>
+        <button class="admin-tab-btn" id="tab-news">Noticias</button>
       </div>
 
-      <!-- ADD / EDIT PET COLLAPSIBLE CARD FORM -->
-      <div class="form-card" id="admin-form-card" style="display: none; margin-bottom: 40px; text-align: left;">
-        <h3 id="form-title">Agregar Nueva Mascota</h3>
-        <p style="color: var(--text-muted); margin-bottom: 24px;" id="form-subtitle">Completá los datos del nuevo rescatado.</p>
-        
-        <form id="admin-pet-form">
-          <input type="hidden" id="pet-id" value="" />
+      <!-- SECTION PETS -->
+      <div id="admin-section-pets">
+        <div class="admin-header-actions">
+          <div>
+            <h2>Mascotas Rescatadas</h2>
+            <p style="color: var(--text-muted);">Gestioná los perritos en adopción en tiempo real.</p>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn btn-outline" id="btn-reset-db">Resetear Base de Datos</button>
+            <button class="btn btn-primary" id="btn-show-add-form">+ Agregar Perrito</button>
+          </div>
+        </div>
+
+        <!-- ADD / EDIT PET COLLAPSIBLE CARD FORM -->
+        <div class="form-card" id="admin-form-card" style="display: none; margin-bottom: 40px; text-align: left;">
+          <h3 id="form-title">Agregar Nueva Mascota</h3>
+          <p style="color: var(--text-muted); margin-bottom: 24px;" id="form-subtitle">Completá los datos del nuevo rescatado.</p>
           
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="form-group">
-              <label for="pet-name">Nombre *</label>
-              <input type="text" id="pet-name" class="form-control" placeholder="Rocky" required />
-            </div>
+          <form id="admin-pet-form">
+            <input type="hidden" id="pet-id" value="" />
             
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div class="form-group">
+                <label for="pet-name">Nombre *</label>
+                <input type="text" id="pet-name" class="form-control" placeholder="Rocky" required />
+              </div>
+              
+              <div class="form-group">
+                <label for="pet-age">Edad (Texto descriptivo) *</label>
+                <input type="text" id="pet-age" class="form-control" placeholder="6 meses / 2 años" required />
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div class="form-group">
+                <label for="pet-category">Categoría *</label>
+                <select id="pet-category" class="form-control" required>
+                  <option value="" disabled selected>Seleccioná una opción</option>
+                  <option value="puppy">Cachorro</option>
+                  <option value="adult">Adulto</option>
+                  <option value="senior">Viejito</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="pet-adopted">Estado Inicial *</label>
+                <select id="pet-adopted" class="form-control" required>
+                  <option value="false">En Adopción (Disponible)</option>
+                  <option value="true">Adoptado</option>
+                </select>
+              </div>
+            </div>
+
             <div class="form-group">
-              <label for="pet-age">Edad (Texto descriptivo) *</label>
-              <input type="text" id="pet-age" class="form-control" placeholder="6 meses / 2 años" required />
+              <label for="pet-traits">Características (Etiquetas separadas por comas) *</label>
+              <input type="text" id="pet-traits" class="form-control" placeholder="Juguetón, Amistoso, Guardián" required />
             </div>
-          </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-              <label for="pet-category">Categoría *</label>
-              <select id="pet-category" class="form-control" required>
-                <option value="" disabled selected>Seleccioná una opción</option>
-                <option value="puppy">Cachorro</option>
-                <option value="adult">Adulto</option>
-                <option value="senior">Viejito</option>
-              </select>
+              <label>Seleccioná una foto de los presets o ingresá una URL *</label>
+              <!-- Preset image picker -->
+              <div class="preset-selector" id="image-preset-selector">
+                <div class="preset-option selected" data-img="./puppy_golden.png">
+                  <img src="./puppy_golden.png" alt="Preset Cachorro" />
+                </div>
+                <div class="preset-option" data-img="./puppy_black.png">
+                  <img src="./puppy_black.png" alt="Preset Cachorro Negro" />
+                </div>
+                <div class="preset-option" data-img="./adult_shepherd.png">
+                  <img src="./adult_shepherd.png" alt="Preset Ovejerito" />
+                </div>
+                <div class="preset-option" data-img="./senior_dog.png">
+                  <img src="./senior_dog.png" alt="Preset Viejito" />
+                </div>
+                <div class="preset-option" data-img="./senior_fluffy.png">
+                  <img src="./senior_fluffy.png" alt="Preset Lanuda" />
+                </div>
+              </div>
+              <input type="text" id="pet-image-url" class="form-control" style="margin-top: 12px;" value="./puppy_golden.png" placeholder="O ingresá la URL de una foto externa" required />
             </div>
-            
+
             <div class="form-group">
-              <label for="pet-adopted">Estado Inicial *</label>
-              <select id="pet-adopted" class="form-control" required>
-                <option value="false">En Adopción (Disponible)</option>
-                <option value="true">Adoptado</option>
-              </select>
+              <label for="pet-description">Descripción *</label>
+              <textarea id="pet-description" class="form-control" rows="4" placeholder="Contanos su historia, temperamento y necesidades..." required></textarea>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label for="pet-traits">Características (Etiquetas separadas por comas) *</label>
-            <input type="text" id="pet-traits" class="form-control" placeholder="Juguetón, Amistoso, Guardián" required />
-          </div>
-
-          <div class="form-group">
-            <label>Seleccioná una foto de los presets o ingresá una URL *</label>
-            <!-- Preset image picker -->
-            <div class="preset-selector" id="image-preset-selector">
-              <div class="preset-option selected" data-img="./puppy_golden.png">
-                <img src="./puppy_golden.png" alt="Preset Cachorro" />
-              </div>
-              <div class="preset-option" data-img="./puppy_black.png">
-                <img src="./puppy_black.png" alt="Preset Cachorro Negro" />
-              </div>
-              <div class="preset-option" data-img="./adult_shepherd.png">
-                <img src="./adult_shepherd.png" alt="Preset Ovejerito" />
-              </div>
-              <div class="preset-option" data-img="./senior_dog.png">
-                <img src="./senior_dog.png" alt="Preset Viejito" />
-              </div>
-              <div class="preset-option" data-img="./senior_fluffy.png">
-                <img src="./senior_fluffy.png" alt="Preset Lanuda" />
-              </div>
+            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+              <button type="button" class="btn btn-outline" id="btn-cancel-form">Cancelar</button>
+              <button type="submit" class="btn btn-primary" id="btn-submit-pet">Guardar Mascota</button>
             </div>
-            <input type="text" id="pet-image-url" class="form-control" style="margin-top: 12px;" value="./puppy_golden.png" placeholder="O ingresá la URL de una foto externa" required />
-          </div>
+          </form>
+        </div>
 
-          <div class="form-group">
-            <label for="pet-description">Descripción *</label>
-            <textarea id="pet-description" class="form-control" rows="4" placeholder="Contanos su historia, temperamento y necesidades..." required></textarea>
-          </div>
-
-          <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
-            <button type="button" class="btn btn-outline" id="btn-cancel-form">Cancelar</button>
-            <button type="submit" class="btn btn-primary" id="btn-submit-pet">Guardar Mascota</button>
-          </div>
-        </form>
+        <!-- PETS LIST TABLE -->
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Foto</th>
+                <th>Nombre</th>
+                <th>Edad</th>
+                <th>Categoría</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-pets-tbody">
+              <!-- Dynamic rows will be rendered here -->
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <!-- PETS LIST TABLE -->
-      <div class="admin-table-container">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Foto</th>
-              <th>Nombre</th>
-              <th>Edad</th>
-              <th>Categoría</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="admin-pets-tbody">
-            <!-- Dynamic rows will be rendered here -->
-          </tbody>
-        </table>
+      <!-- SECTION NEWS -->
+      <div id="admin-section-news" style="display: none;">
+        <div class="admin-header-actions">
+          <div>
+            <h2>Noticias y Campañas</h2>
+            <p style="color: var(--text-muted);">Gestioná las noticias y novedades en el carrusel de inicio.</p>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn btn-outline" id="btn-reset-news-db">Resetear Noticias</button>
+            <button class="btn btn-primary" id="btn-show-add-news-form">+ Agregar Noticia</button>
+          </div>
+        </div>
+
+        <!-- ADD / EDIT NEWS COLLAPSIBLE CARD FORM -->
+        <div class="form-card" id="admin-news-form-card" style="display: none; margin-bottom: 40px; text-align: left;">
+          <h3 id="news-form-title">Agregar Nueva Noticia</h3>
+          <p style="color: var(--text-muted); margin-bottom: 24px;" id="news-form-subtitle">Completá los datos de la novedad.</p>
+          
+          <form id="admin-news-form">
+            <input type="hidden" id="news-id" value="" />
+            
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+              <div class="form-group">
+                <label for="news-title">Título *</label>
+                <input type="text" id="news-title" class="form-control" placeholder="¡Campaña de Castración Exitosa!" required />
+              </div>
+              
+              <div class="form-group">
+                <label for="news-date">Fecha (Ej: 10 Jun 2026) *</label>
+                <input type="text" id="news-date" class="form-control" placeholder="10 Jun 2026" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Seleccioná una foto de los presets o ingresá una URL *</label>
+              <!-- Preset news image picker -->
+              <div class="preset-selector" id="news-image-preset-selector">
+                <div class="preset-option-news selected" data-img="./hero_dog.png">
+                  <img src="./hero_dog.png" alt="Preset Portada" />
+                </div>
+                <div class="preset-option-news" data-img="./puppy_golden.png">
+                  <img src="./puppy_golden.png" alt="Preset Cachorro" />
+                </div>
+                <div class="preset-option-news" data-img="./puppy_black.png">
+                  <img src="./puppy_black.png" alt="Preset Cachorro Negro" />
+                </div>
+                <div class="preset-option-news" data-img="./senior_dog.png">
+                  <img src="./senior_dog.png" alt="Preset Viejito" />
+                </div>
+                <div class="preset-option-news" data-img="./adult_shepherd.png">
+                  <img src="./adult_shepherd.png" alt="Preset Ovejerito" />
+                </div>
+                <div class="preset-option-news" data-img="./senior_fluffy.png">
+                  <img src="./senior_fluffy.png" alt="Preset Lanuda" />
+                </div>
+              </div>
+              <input type="text" id="news-image-url" class="form-control" style="margin-top: 12px;" value="./hero_dog.png" placeholder="O ingresá la URL de una foto externa" required />
+            </div>
+
+            <div class="form-group">
+              <label for="news-description">Cuerpo/Descripción de la Noticia *</label>
+              <textarea id="news-description" class="form-control" rows="5" placeholder="Escribí los detalles de la noticia aquí..." required></textarea>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+              <button type="button" class="btn btn-outline" id="btn-cancel-news-form">Cancelar</button>
+              <button type="submit" class="btn btn-primary" id="btn-submit-news">Guardar Noticia</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- NEWS LIST TABLE -->
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Foto</th>
+                <th>Título</th>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-news-tbody">
+              <!-- Dynamic news rows will be rendered here -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </main>
 

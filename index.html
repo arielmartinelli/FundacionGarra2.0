@@ -332,60 +332,64 @@
           <p>Enterate de los últimos sucesos del refugio, campañas comunitarias e historias felices.</p>
         </div>
         
-        <div class="news-grid">
-          <!-- News 1 -->
-          <article class="news-card animate-on-scroll delay-1" id="news-caniles">
-            <div class="news-img">
-              <span class="news-date">10 Ago 2024</span>
-              <img src="./hero_dog.png" style="filter: grayscale(0.25);" alt="Obras en el refugio" />
-            </div>
-            <div class="news-content">
-              <h3>¡Caniles reconstruidos con éxito!</h3>
-              <p>Tras el grave choque sufrido contra el muro perimetral de nuestro predio en Barrio Müller, logramos levantar e impermeabilizar nuevamente los caniles dañados gracias al enorme apoyo económico de la comunidad cordobesa.</p>
-              <a href="#" class="read-more" id="news-link-caniles">
-                Leer nota completa
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-                </svg>
-              </a>
-            </div>
-          </article>
+        <div class="news-carousel-container">
+          <div class="news-grid" id="news-grid">
+            <!-- News 1 -->
+            <article class="news-card animate-on-scroll delay-1" id="news-caniles">
+              <div class="news-img">
+                <span class="news-date">10 Ago 2024</span>
+                <img src="./hero_dog.png" style="filter: grayscale(0.25);" alt="Obras en el refugio" />
+              </div>
+              <div class="news-content">
+                <h3>¡Caniles reconstruidos con éxito!</h3>
+                <p>Tras el grave choque sufrido contra el muro perimetral de nuestro predio en Barrio Müller, logramos levantar e impermeabilizar nuevamente los caniles dañados gracias al enorme apoyo económico de la comunidad cordobesa.</p>
+              </div>
+            </article>
 
-          <!-- News 2 -->
-          <article class="news-card animate-on-scroll delay-2" id="news-vacunacion">
-            <div class="news-img">
-              <span class="news-date">28 May 2026</span>
-              <img src="./puppy_golden.png" style="filter: hue-rotate(45deg);" alt="Campaña vacunación" />
-            </div>
-            <div class="news-content">
-              <h3>Jornada de Vacunación Gratuita</h3>
-              <p>El próximo sábado realizaremos una gran jornada de vacunación antirrábica y desparasitación gratuita en la plaza de Barrio San Vicente en conjunto con el Ente BioCórdoba. ¡Traé a tu mascota con correa y collar!</p>
-              <a href="#" class="read-more" id="news-link-vacunacion">
-                Leer nota completa
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-                </svg>
-              </a>
-            </div>
-          </article>
+            <!-- News 2 -->
+            <article class="news-card animate-on-scroll delay-2" id="news-vacunacion">
+              <div class="news-img">
+                <span class="news-date">28 May 2026</span>
+                <img src="./puppy_golden.png" style="filter: hue-rotate(45deg);" alt="Campaña vacunación" />
+              </div>
+              <div class="news-content">
+                <h3>Jornada de Vacunación Gratuita</h3>
+                <p>El próximo sábado realizaremos una gran jornada de vacunación antirrábica y desparasitación gratuita en la plaza de Barrio San Vicente en conjunto con el Ente BioCórdoba. ¡Traé a tu mascota con correa y collar!</p>
+              </div>
+            </article>
 
-          <!-- News 3 -->
-          <article class="news-card animate-on-scroll delay-3" id="news-adopcion-exitosa">
-            <div class="news-img">
-              <span class="news-date">12 Abr 2026</span>
-              <img src="./senior_dog.png" style="filter: saturate(1.2);" alt="Milo feliz en su casa" />
+            <!-- News 3 -->
+            <article class="news-card animate-on-scroll delay-3" id="news-adopcion-exitosa">
+              <div class="news-img">
+                <span class="news-date">12 Abr 2026</span>
+                <img src="./senior_dog.png" style="filter: saturate(1.2);" alt="Milo feliz en su casa" />
+              </div>
+              <div class="news-content">
+                <h3>La nueva vida de Milo</h3>
+                <p>Milo pasó 3 años esperando una familia en el refugio por ser un perrito de edad avanzada. Hoy nos comparte una foto durmiendo plácidamente junto a su adoptante María. ¡Adoptar un viejito es un acto de amor inigualable!</p>
+              </div>
+            </article>
+          </div>
+
+          <!-- News Carousel Controls -->
+          <div class="news-controls">
+            <button class="news-control-btn" id="news-prev" aria-label="Noticias anteriores">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+              </svg>
+            </button>
+            
+            <div class="news-dots" id="news-dots">
+              <span class="news-dot active" data-page="0"></span>
+              <span class="news-dot" data-page="1"></span>
             </div>
-            <div class="news-content">
-              <h3>La nueva vida de Milo</h3>
-              <p>Milo pasó 3 años esperando una familia en el refugio por ser un perrito de edad avanzada. Hoy nos comparte una foto durmiendo plácidamente junto a su adoptante María. ¡Adoptar un viejito es un acto de amor inigualable!</p>
-              <a href="#" class="read-more" id="news-link-milo">
-                Leer nota completa
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-                </svg>
-              </a>
-            </div>
-          </article>
+            
+            <button class="news-control-btn" id="news-next" aria-label="Noticias siguientes">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </section>
