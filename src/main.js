@@ -446,29 +446,100 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================
-     SCROLL PROGRESS PAW INDICATORS
+     DYNAMIC BACKGROUND SCROLL FOOTPRINTS
      ========================================== */
-  const pawIndicators = document.querySelectorAll('.paw-indicator');
-
-  if (pawIndicators.length > 0) {
-    const updatePawScroll = () => {
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollHeight <= 0) return;
-      const scrollPercent = (window.scrollY / scrollHeight) * 100;
-      
-      pawIndicators.forEach((paw, idx) => {
-        const threshold = (idx + 1) * 20 - 5; // 15%, 35%, 55%, 75%, 95%
-        if (scrollPercent >= threshold) {
-          paw.classList.add('active');
-        } else {
-          paw.classList.remove('active');
-        }
-      });
-    };
-
-    window.addEventListener('scroll', updatePawScroll);
-    updatePawScroll(); // Initial run to light up the first ones if page loaded scrolled
+  // Create or retrieve the paw prints container dynamically
+  let pawContainer = document.getElementById('paw-trail-container');
+  if (!pawContainer) {
+    pawContainer = document.createElement('div');
+    pawContainer.id = 'paw-trail-container';
+    pawContainer.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(pawContainer);
   }
+
+  // Spawning variables
+  let maxScrollBottom = window.scrollY + window.innerHeight;
+  const stepDistance = 140; // px of scroll to trigger next step
+  let stepCount = 0;
+  let pathX = window.innerWidth / 2;
+
+  // Spawns a single paw print at coordinates (x, y)
+  const spawnPawPrint = (y) => {
+    stepCount++;
+    
+    // Meander the path center slightly
+    // Generates a random walk with organic zig-zag
+    const wander = (Math.random() - 0.5) * 55; // max 27.5px shift per step
+    pathX += wander;
+    
+    // Bind pathX within 12% and 88% of screen width to prevent spawning off-screen
+    const minX = window.innerWidth * 0.12;
+    const maxX = window.innerWidth * 0.88;
+    if (pathX < minX) pathX = minX;
+    if (pathX > maxX) pathX = maxX;
+    
+    const isLeft = (stepCount % 2 === 0);
+    // Narrower stride on mobile
+    const stride = window.innerWidth < 768 ? 16 : 28;
+    const spawnX = isLeft ? (pathX - stride) : (pathX + stride);
+    
+    // Create the paw print element
+    const paw = document.createElement('div');
+    paw.className = 'scroll-paw-print';
+    
+    // Rotate to point toes down the page (180 degrees) with slight inward pigeon-toed rotation
+    const baseRotation = 180;
+    const angleOffset = isLeft ? -10 : 10;
+    const rotation = baseRotation + angleOffset;
+    
+    paw.style.left = `${spawnX}px`;
+    paw.style.top = `${y}px`;
+    paw.style.setProperty('--paw-rot', `${rotation}deg`);
+    
+    // Randomized organic opacity (0.045 to 0.08)
+    const opacity = (0.045 + Math.random() * 0.035).toFixed(3);
+    paw.style.setProperty('--paw-opacity', opacity);
+    
+    // FontAwesome 6 Solid Paw SVG path
+    paw.innerHTML = `
+      <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%; fill: currentColor;">
+        <path d="M226.5 92.9c14.3 42.9-.3 86.2-32.6 96.8s-70.1-15.6-84.4-58.5s.3-86.2 32.6-96.8s70.1 15.6 84.4 58.5zM100.4 198.6c18.9 32.4 14.3 70.1-10.2 84.1s-59.7-.9-78.5-33.3S-2.7 179.3 21.8 165.3s59.7 .9 78.5 33.3zM69.2 401.2C121.6 259.9 214.7 224 256 224s134.4 35.9 186.8 177.2c3.6 9.7 5.2 20.1 5.2 30.5l0 1.6c0 25.8-20.9 46.7-46.7 46.7c-11.5 0-22.9-1.4-34-4.2l-88-22c-15.3-3.8-31.3-3.8-46.6 0l-88 22c-11.1 2.8-22.5 4.2-34 4.2C84.9 480 64 459.1 64 433.3l0-1.6c0-10.4 1.6-20.8 5.2-30.5zM421.8 282.7c-24.5-14-29.1-51.7-10.2-84.1s54-47.3 78.5-33.3s29.1 51.7 10.2 84.1s-54 47.3-78.5 33.3zM310.1 189.7c-32.3-10.6-46.9-53.9-32.6-96.8s52.1-69.1 84.4-58.5s46.9 53.9 32.6 96.8s-52.1 69.1-84.4 58.5z"/>
+      </svg>
+    `;
+    
+    pawContainer.appendChild(paw);
+    
+    // Prune oldest elements to keep memory lightweight (max 60 paws)
+    const maxPaws = 60;
+    const activePaws = pawContainer.getElementsByClassName('scroll-paw-print');
+    if (activePaws.length > maxPaws) {
+      const oldest = activePaws[0];
+      oldest.classList.add('fade-out');
+      setTimeout(() => {
+        if (oldest.parentNode === pawContainer) {
+          pawContainer.removeChild(oldest);
+        }
+      }, 800); // match CSS fade-out transition duration (0.8s)
+    }
+  };
+
+  const handleScrollPaws = () => {
+    const currentBottom = window.scrollY + window.innerHeight;
+    
+    // Spawn only when scrolling downwards past the maximum scroll reached so far
+    if (currentBottom > maxScrollBottom + stepDistance) {
+      const stepsNeeded = Math.floor((currentBottom - maxScrollBottom) / stepDistance);
+      for (let i = 1; i <= stepsNeeded; i++) {
+        // Position them slightly above the bottom viewport edge so they appear naturally as you scroll them into view
+        const spawnY = maxScrollBottom + (i * stepDistance) - 100;
+        spawnPawPrint(spawnY);
+      }
+      maxScrollBottom = maxScrollBottom + (stepsNeeded * stepDistance);
+    }
+  };
+
+  // Listen to window scroll events
+  window.addEventListener('scroll', handleScrollPaws);
 
   /* ==========================================
      INTERSECTION OBSERVER FOR SCROLL ANIMATIONS
