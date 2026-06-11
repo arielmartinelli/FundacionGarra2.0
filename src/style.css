@@ -1928,7 +1928,8 @@ select.form-control {
   text-shadow: 
     0.5px 0.5px 1px rgba(0, 0, 0, 0.15),
     -0.5px -0.5px 1px rgba(0, 0, 0, 0.1),
-    0 0 5px rgba(231, 111, 81, 0.25); /* Soft primary color fuzzy glow */
+    0 0 4px rgba(231, 111, 81, 0.3),
+    0 0 8px rgba(231, 111, 81, 0.15); /* Dual blur layers for deep fluffiness */
 }
 
 [data-theme="dark"] .hero-content h1,
@@ -1936,5 +1937,6 @@ select.form-control {
   text-shadow: 
     0.5px 0.5px 1px rgba(255, 255, 255, 0.1),
     -0.5px -0.5px 1px rgba(255, 255, 255, 0.05),
-    0 0 6px rgba(231, 111, 81, 0.4);
+    0 0 5px rgba(231, 111, 81, 0.45),
+    0 0 9px rgba(231, 111, 81, 0.2);
 }
