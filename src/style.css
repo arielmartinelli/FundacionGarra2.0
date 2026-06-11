@@ -1924,26 +1924,17 @@ select.form-control {
 /* Furry/Hairy Text Effect for Main Titles */
 .hero-content h1,
 .section-header h2 {
-  background-image: url('./assets/dog_fur_texture.png');
-  background-size: 140px 140px;
-  background-repeat: repeat;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  display: inline-block;
-  filter: url(#furry-filter) drop-shadow(2px 3px 5px rgba(15, 12, 8, 0.45));
-}
-
-/* Tint the span inside hero h1 with an orange fur texture */
-.hero-content h1 span {
-  background-image: linear-gradient(rgba(231, 111, 81, 0.45), rgba(231, 111, 81, 0.45)), url('./assets/dog_fur_texture.png');
-  background-blend-mode: multiply;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  filter: url(#furry-filter);
+  text-shadow: 
+    0.5px 0.5px 1px rgba(0, 0, 0, 0.15),
+    -0.5px -0.5px 1px rgba(0, 0, 0, 0.1),
+    0 0 5px rgba(231, 111, 81, 0.25); /* Soft primary color fuzzy glow */
 }
 
 [data-theme="dark"] .hero-content h1,
 [data-theme="dark"] .section-header h2 {
-  filter: url(#furry-filter) drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.75));
+  text-shadow: 
+    0.5px 0.5px 1px rgba(255, 255, 255, 0.1),
+    -0.5px -0.5px 1px rgba(255, 255, 255, 0.05),
+    0 0 6px rgba(231, 111, 81, 0.4);
 }
